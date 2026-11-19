@@ -1,12 +1,28 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [inputValue, setInputValue] = useState("");
   const [todoList, setTodoList] = useState([]);
   const [activeFilter, setActiveFilter] = useState("Бүгд");
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const sizePrices = ["Бүгд", "Хийх", "Дууссан"];
+
+  useEffect(() => {
+    const savedTodos = localStorage.getItem("todoList");
+
+    if (savedTodos) {
+      setTodoList(JSON.parse(savedTodos));
+    }
+
+    setIsLoaded(true);
+  }, []);
+  useEffect(() => {
+    if (!isLoaded) return;
+
+    localStorage.setItem("todoList", JSON.stringify(todoList));
+  }, [todoList, isLoaded]);
 
   const submitTodoList = () => {
     if (inputValue.trim() === "") return;
